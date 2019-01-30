@@ -3,7 +3,7 @@ require 'open3'
 require 'rubyserial'
 
 client = PahoMqtt::Client.new()
-serialport = Serial.new 'COM5'
+serialport = Serial.new '/dev/ttyACM0'
 
 client.on_message do |p|
 	puts "Topic: #{p.topic}\nPayload: #{p.payload}\nQoS: #{p.qos}"
@@ -15,7 +15,17 @@ client.subscribe(["diana/controller", 2])
 
 Thread.new {
 	loop do
-		payload = "{ \"powerStatus\": #{rand(0...2)}, \"waterLevel\": #{rand(0...600)} }"
+		serialport.write 'q'
+		x = ''
+		payload = "{"
+		while x != '{' do
+			x = serialport.read 1
+		end
+		while x != '}' do
+			x = serialport.read 1
+			if x != '' then payload << x end
+		end
+		puts payload
 		client.publish("diana/status", payload, false, 1)
 		sleep 2
 	end
