@@ -166,9 +166,23 @@
 			$('#powerSwitch').prop('checked', true);
 		} else if (payload.powerStatus == 0) {
 			$('#powerSwitch').prop('checked', false);
-		}
+        	}
+        	$('#powerSwitch').attr('disabled', false);
 	  }
-	}
+    	}
+
+    	$('#powerSwitch').change(function () {
+        	$('#powerSwitch').attr('disabled', true);
+        	if (this.checked) {
+            		message = new Paho.MQTT.Message("w");
+            		message.destinationName = "diana/controller";
+            		client.send(message);
+        	} else {
+            		message = new Paho.MQTT.Message("e");
+            		message.destinationName = "diana/controller";
+            		client.send(message);
+        	}
+    	});
 </script>
 
 </html>
