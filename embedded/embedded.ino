@@ -49,7 +49,7 @@ void readSerial() {
     char data = Serial.read();
     Serial.println(data);
     if (data == 'q') {
-      Serial.println("{ 'powerStatus': " + String(powerStatus) + ", 'waterLevel': " + String(waterLevel) + " }");
+      Serial.println("{ \"powerStatus\": " + String(powerStatus) + ", \"waterLevel\": " + String(waterLevel) + " }");
     } else if (data == 'w') {
       switchOn();
     } else if (data == 'e') {
