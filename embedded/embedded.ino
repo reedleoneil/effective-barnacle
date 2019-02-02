@@ -4,7 +4,7 @@
 const int relay1Pin = 30;
 const int relay2Pin = 31;
 const int waterLevelSensorPin = A0;
-Sim800L gsm(10, 11); // RX, TX
+Sim800L gsm(7, 8); // RX, TX
 
 bool powerStatus = LOW;
 int waterLevel = 0;
@@ -12,6 +12,7 @@ int waterLevel = 0;
 void setup() {
   Serial.begin(9600);
   gsm.begin(4800);   
+  gsm.setSleepMode(false);
   pinMode(relay1Pin, OUTPUT);
   pinMode(relay2Pin, OUTPUT);
 }
@@ -35,13 +36,30 @@ void switchOff() {
 
 void readWaterLevel() {
   waterLevel = analogRead(waterLevelSensorPin);
+  if (waterLevel > 450) {
+    //sendSMS();
+    SendMessage();
+  }
+  delay(100);
 }
 
 void sendSMS() {
-  char* number = "*********";
+  char* number = "";
   char* text = "YOUR SOCKET HAS BEEN EXPOSED TO WATER!!!";
   gsm.sendSms(number,text);
-  delay(5000);
+}
+
+void SendMessage()
+{
+  gsm.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
+  delay(1000);
+  gsm.println("AT+CMGS=\"numberhere\"\r"); //Mobile phone number to send message
+  delay(1000);
+  String SMS = "YOUR SOCKET HAS BEEN EXPOSED TO WATER!!!";
+  gsm.println(SMS);
+  delay(100);
+  gsm.println((char)26);// ASCII code of CTRL+Z
+  delay(1000);
 }
 
 void readSerial() {
