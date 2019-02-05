@@ -45,7 +45,7 @@ void readWaterLevel() {
 
 void sendSMS() {
   char* number = "";
-  char* text = "YOUR SOCKET HAS BEEN EXPOSED TO WATER!!!";
+  char* text = "Warning: Water has reached critical level!";
   gsm.sendSms(number,text);
 }
 
@@ -55,7 +55,7 @@ void SendMessage()
   delay(1000);
   gsm.println("AT+CMGS=\"numberhere\"\r"); //Mobile phone number to send message
   delay(1000);
-  String SMS = "YOUR SOCKET HAS BEEN EXPOSED TO WATER!!!";
+  String SMS = "Warning: Water has reached critical level!";
   gsm.println(SMS);
   delay(100);
   gsm.println((char)26);// ASCII code of CTRL+Z
