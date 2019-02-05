@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>bootstrap.css</file>
+        <file>house.png</file>
+        <file>index.html</file>
+        <file>jquery.js</file>
+        <file>mqttws31.js</file>
+        <file>sparkline.js</file>
+    </qresource>
+</RCC>
