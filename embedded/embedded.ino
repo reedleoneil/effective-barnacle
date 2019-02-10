@@ -8,6 +8,7 @@ Sim800L gsm(7, 8); // RX, TX
 
 bool powerStatus = LOW;
 int waterLevel = 0;
+bool sms = false;
 
 void setup() {
   Serial.begin(9600);
@@ -36,9 +37,13 @@ void switchOff() {
 
 void readWaterLevel() {
   waterLevel = analogRead(waterLevelSensorPin);
-  if (waterLevel > 450) {
-    //sendSMS();
+  if (waterLevel > 350 && sms == false) {
+    sms = true;
     SendMessage();
+  } else if (waterLevel > 350 && sms == true) {
+    // do nothing
+  } else {
+    sms = false;
   }
   delay(100);
 }
