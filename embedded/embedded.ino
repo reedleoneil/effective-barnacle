@@ -40,11 +40,13 @@ void readWaterLevel() {
   waterLevel = analogRead(waterLevelSensorPin);
   if (waterLevel > 350 && sms == false) {
     sms = true;
+    switchOff();
     SendMessage();
   } else if (waterLevel > 350 && sms == true) {
     // do nothing
   } else {
     sms = false;
+    switchOn();
   }
   delay(100);
 }
