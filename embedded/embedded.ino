@@ -9,6 +9,7 @@ Sim800L gsm(7, 8); // RX, TX
 bool powerStatus = LOW;
 int waterLevel = 0;
 bool sms = false;
+int acknowledge = false;
 
 void setup() {
   Serial.begin(9600);
@@ -72,10 +73,13 @@ void readSerial() {
     char data = Serial.read();
     Serial.println(data);
     if (data == 'q') {
-      Serial.println("{ \"powerStatus\": " + String(powerStatus) + ", \"waterLevel\": " + String(waterLevel) + " }");
+      Serial.println("{ \"powerStatus\": " + String(powerStatus) + ", \"waterLevel\": " + String(waterLevel) + ", \"acknowledge\": " + String(acknowledge) + " }");
+      acknowledge = false;
     } else if (data == 'w') {
+      acknowledge = true;
       switchOn();
     } else if (data == 'e') {
+      acknowledge = true;
       switchOff();
     } else if (data == 'r') {
       sendSMS();
