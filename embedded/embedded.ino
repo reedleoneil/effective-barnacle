@@ -8,8 +8,16 @@ Sim800L gsm(7, 8); // RX, TX
 
 bool powerStatus = LOW;
 int waterLevel = 0;
-bool sms = false;
+bool critical = false;
+bool hasWater = false;
 int acknowledge = false;
+
+String phone_number = "09161195643"; //09161195643
+
+String message_1 = "Warning! The water level is close to critical level.";
+String message_2 = "Attention! The water level has reached the critical level. Please turn off the socket for safety assurance, else, wait for the system to work.";
+String message_3 = "Attention! The water level went down from the critical level.";
+String message_4 = "Attention! The water subsided and is now out of critical level.";
 
 void setup() {
   Serial.begin(9600);
@@ -38,32 +46,45 @@ void switchOff() {
 
 void readWaterLevel() {
   waterLevel = analogRead(waterLevelSensorPin);
-  if (waterLevel > 350 && sms == false) {
-    sms = true;
-    switchOff();
-    SendMessage();
-  } else if (waterLevel > 350 && sms == true) {
-    // do nothing
-  } else {
-    sms = false;
-    switchOn();
+  //Serial.println(waterLevel);
+
+  if (waterLevel <= 10) {
+    if (hasWater) {
+      hasWater = false;
+      SendMessage(phone_number, message_4); //Serial.println(message_4);
+    }
+  } else if (waterLevel > 10 && waterLevel <= 350) {
+    if (critical) {
+      critical = false;
+      SendMessage(phone_number, message_3); //Serial.println(message_3);
+    }
+    if (!hasWater) {
+      hasWater = true;
+      SendMessage(phone_number, message_1); //Serial.println(message_1);
+    }
+  } else if (waterLevel > 350) {
+    if (!critical) {
+      critical = true;
+      SendMessage(phone_number, message_2); //Serial.println(message_2);
+    }
   }
+  
   delay(100);
 }
 
 void sendSMS() {
-  char* number = "";
+  char* number = "09161195643";
   char* text = "Warning: Water has reached critical level!";
   gsm.sendSms(number,text);
 }
 
-void SendMessage()
+void SendMessage(String number, String message)
 {
   gsm.println("AT+CMGF=1");    //Sets the GSM Module in Text Mode
   delay(1000);
-  gsm.println("AT+CMGS=\"numberhere\"\r"); //Mobile phone number to send message
+  gsm.println("AT+CMGS=\"" + phone_number + "\"\r"); //Mobile phone number to send message
   delay(1000);
-  String SMS = "Warning: Water has reached critical level!";
+  String SMS = message;
   gsm.println(SMS);
   delay(100);
   gsm.println((char)26);// ASCII code of CTRL+Z
@@ -85,6 +106,14 @@ void readSerial() {
       switchOff();
     } else if (data == 'r') {
       sendSMS();
+    } else if (data == 'a') {
+      SendMessage(phone_number, message_1);
+    } else if (data == 's') {
+      SendMessage(phone_number, message_2);
+    } else if (data == 'd') {
+      SendMessage(phone_number, message_3);
+    } else if (data == 'f') {
+      SendMessage(phone_number, message_4);
     }
   }
 }
