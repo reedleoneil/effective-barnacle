@@ -4,7 +4,7 @@
 const int relay1Pin = 30;
 const int relay2Pin = 31;
 const int waterLevelSensorPin = A0;
-Sim800L gsm(7, 8); // RX, TX
+Sim800L gsm(10, 11); // RX, TX
 
 bool powerStatus = LOW;
 int waterLevel = 0;
@@ -25,11 +25,17 @@ void setup() {
   gsm.setSleepMode(false);
   pinMode(relay1Pin, OUTPUT);
   pinMode(relay2Pin, OUTPUT);
+  delay(5000);
+  gsm.println("AT+CMGF=1");
+  delay(1000);
+  gsm.println("AT+CNMI=2,2,0,0,0");
+  delay(1000);
 }
 
 void loop() {
   readWaterLevel();
   readSerial();
+  readSMS();
 }
 
 void switchOn() {
@@ -89,6 +95,18 @@ void SendMessage(String number, String message)
   delay(100);
   gsm.println((char)26);// ASCII code of CTRL+Z
   delay(1000);
+}
+
+void readSMS() { 
+  String textMessage;
+  if(gsm.available()>0){
+    textMessage = gsm.readString();
+    if (textMessage.indexOf("ON")>=0) {
+      switchOn();  
+    } else if (textMessage.indexOf("OFF")>=0) {
+      switchOff();  
+    }
+  } 
 }
 
 void readSerial() {
