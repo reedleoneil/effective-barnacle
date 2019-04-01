@@ -10,7 +10,8 @@ client.on_message do |p|
 	serialport.write(p.payload)
 end
 
-client.connect('iot.eclipse.org', 1883, client.keep_alive, true, true)
+#client.connect('iot.eclipse.org', 1883, client.keep_alive, true, true)
+client.connect('localhost', 1883, client.keep_alive, true, true)
 client.subscribe(["diana/controller", 2])
 
 Thread.new {
@@ -27,7 +28,7 @@ Thread.new {
 		end
 		puts payload
 		client.publish("diana/status", payload, false, 1)
-		sleep 2
+		sleep 1
 	end
 }
 
