@@ -101,9 +101,9 @@ void readSMS() {
   String textMessage;
   if(gsm.available()>0){
     textMessage = gsm.readString();
-    if (textMessage.indexOf("ON")>=0) {
+    if (textMessage.indexOf("OFF")>=0) {
       switchOn();  
-    } else if (textMessage.indexOf("OFF")>=0) {
+    } else if (textMessage.indexOf("ON")>=0) {
       switchOff();  
     }
   } 

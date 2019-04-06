@@ -110,7 +110,7 @@
 	  <div class="row">
 	    <div class="col-xs-4">
 		<label class="switch">
-		   <input type="checkbox" id="powerSwitch">
+                   <input type="checkbox" id="powerSwitch" checked="true">
 		   <span class="slider round"></span>
 		</label>
 	    </div>
@@ -305,9 +305,9 @@ function online() {
 
                                 if ($('#powerSwitch').attr('disabled') != "disabled") {
                                     if (payload.powerStatus == 1) {
-                                            $('#powerSwitch').prop('checked', true);
-                                    } else if (payload.powerStatus == 0) {
                                             $('#powerSwitch').prop('checked', false);
+                                    } else if (payload.powerStatus == 0) {
+                                            $('#powerSwitch').prop('checked', true);
                                     }
                                 }
 
@@ -323,9 +323,9 @@ function online() {
                 $('#powerSwitch').change(function () {
                         $('#powerSwitch').attr('disabled', true);
                         if (this.checked) {
-                                client.publish('diana/controller', 'w');
-                        } else {
                                 client.publish('diana/controller', 'e');
+                        } else {
+                                client.publish('diana/controller', 'w');
                         }
                 });
              } catch (err) {
@@ -371,9 +371,9 @@ function local() {
 
                                 if ($('#powerSwitch').attr('disabled') != "disabled") {
                                     if (payload.powerStatus == 1) {
-                                            $('#powerSwitch').prop('checked', true);
-                                    } else if (payload.powerStatus == 0) {
                                             $('#powerSwitch').prop('checked', false);
+                                    } else if (payload.powerStatus == 0) {
+                                            $('#powerSwitch').prop('checked', true);
                                     }
                                 }
 
@@ -389,9 +389,9 @@ function local() {
                 $('#powerSwitch').change(function () {
                         $('#powerSwitch').attr('disabled', true);
                         if (this.checked) {
-                                local.publish('diana/controller', 'w');
-                        } else {
                                 local.publish('diana/controller', 'e');
+                        } else {
+                                local.publish('diana/controller', 'w');
                         }
                 });
              } catch (err) {
